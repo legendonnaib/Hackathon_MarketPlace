@@ -1,28 +1,33 @@
-// components/CartDetails.tsx
+// app/products/context/CartContext.tsx
 
-import React from 'react';
-import { useCart } from '../app/product/context/CartContext';
-import { Product } from '../../types/product';  // Correct import for the Product type
+import React, { createContext, useContext, useState } from 'react';
+import { Product } from '../../types/product';  // Ensure correct import of Product type
 
-interface CartDetailsProps {
-  product: Product;  // Use the imported Product type
+interface CartContextType {
+  cart: Product[];
+  addToCart: (product: Product) => void;
 }
 
-const CartDetails: React.FC<CartDetailsProps> = ({ product }) => {
-  const { addToCart } = useCart();
+const CartContext = createContext<CartContextType | undefined>(undefined);
 
-  const handleAddToCart = () => {
-    if (product) {
-      addToCart(product); // Correct usage of the product type
-    }
+export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [cart, setCart] = useState<Product[]>([]);
+
+  const addToCart = (product: Product) => {
+    setCart((prev) => [...prev, product]);
   };
 
   return (
-    <div className="card-details">
-      <h1>{product.title}</h1>
-      <button onClick={handleAddToCart}>Add to Cart</button>
-    </div>
+    <CartContext.Provider value={{ cart, addToCart }}>
+      {children}
+    </CartContext.Provider>
   );
 };
 
-export default CartDetails;
+export const useCart = (): CartContextType => {
+  const context = useContext(CartContext);
+  if (!context) {
+    throw new Error('useCart must be used within a CartProvider');
+  }
+  return context;
+};
