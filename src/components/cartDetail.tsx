@@ -1,26 +1,19 @@
-// components/CardDetails.tsx
+// components/CartDetails.tsx
 
 import React from 'react';
-import { useCart } from '../app/products/context/CartContext';
+import { useCart } from '../app/product/context/CartContext';
+import { Product } from '../../types/product';  // Correct import for the Product type
 
-
-interface Product {
-    id: number;
-    title: string;
-    price: number;
-    description: string;
-    category: string;
-    image: string;
-    inventory: number;
-    rating: number;
+interface CartDetailsProps {
+  product: Product;  // Use the imported Product type
 }
 
-const CardDetails: React.FC<{ product: Product }> = ({ product }) => {
+const CartDetails: React.FC<CartDetailsProps> = ({ product }) => {
   const { addToCart } = useCart();
 
   const handleAddToCart = () => {
     if (product) {
-      addToCart(product);
+      addToCart(product); // Correct usage of the product type
     }
   };
 
@@ -32,4 +25,4 @@ const CardDetails: React.FC<{ product: Product }> = ({ product }) => {
   );
 };
 
-export default CardDetails;
+export default CartDetails;
